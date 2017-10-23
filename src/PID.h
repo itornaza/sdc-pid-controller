@@ -9,7 +9,13 @@ public:
   double p_error;
   double i_error;
   double d_error;
-
+  
+  /**
+   * Helper variables
+   */
+  double cte_sum;
+  double cte_previous;
+  
   /**
    * Coefficients
    */
@@ -28,7 +34,7 @@ public:
   virtual ~PID();
 
   /**
-   * Initialize PID.
+   * Initialize PID
    */
   void Init(double Kp, double Ki, double Kd);
 
@@ -38,7 +44,7 @@ public:
   void UpdateError(double cte);
 
   /*
-   * Calculate the total PID error.
+   * Calculate the total PID error
    */
   double TotalError();
 };
