@@ -15,6 +15,14 @@ double rad2deg(double x) { return x * 180 / pi(); }
 static int time_steps;
 
 /**
+ * Helper method to restart the simulator
+ */
+void Restart(uWS::WebSocket<uWS::SERVER> ws){
+  std::string reset_msg = "42[\"reset\",{}]";
+  ws.send(reset_msg.data(), reset_msg.length(), uWS::OpCode::TEXT);
+}
+
+/**
  * Checks if the SocketIO event has JSON data.
  * If there is data the JSON object in string format will be returned,
  * else the empty string "" will be returned
@@ -60,6 +68,7 @@ int main() {
         if (event == "telemetry") {
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<std::string>());
+          
           // Note: Uncomment to use angle and speed data
           // double speed = std::stod(j[1]["speed"].get<std::string>());
           // double angle = std::stod(j[1]["steering_angle"].get<std::string>());
@@ -78,7 +87,11 @@ int main() {
           if (time_steps > 500 && time_steps < 1000) {
             pid_steering.Twiddle(0.7);
           }
-          
+          if (fabs(steer_value) > 1.0) {
+            std::cout << "Restarting sim" << std::endl;
+            Restart(ws);
+            time_steps = 0;
+          }
           
           // Trottle control signal
           pid_throttle.UpdateError(fabs(steer_value));
