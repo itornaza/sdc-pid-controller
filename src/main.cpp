@@ -12,6 +12,8 @@ constexpr double pi() { return M_PI; }
 double deg2rad(double x) { return x * pi() / 180; }
 double rad2deg(double x) { return x * 180 / pi(); }
 
+static int time_steps;
+
 /**
  * Checks if the SocketIO event has JSON data.
  * If there is data the JSON object in string format will be returned,
@@ -72,20 +74,29 @@ int main() {
           pid_steering.UpdateError(cte);
           steer_value = pid_steering.TotalError();
           
+          // TODO: Optimise with twiddler
+          if (time_steps > 500 && time_steps < 1000) {
+            pid_steering.Twiddle(0.7);
+          }
+          
+          
           // Trottle control signal
           pid_throttle.UpdateError(fabs(steer_value));
           throttle_value = 0.5 + pid_throttle.TotalError();
           //********************************************************************
           
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value
-                    << std::endl;
+          std::cout << "[" << time_steps << "] CTE: " << cte
+                    << " Steering Value: " << steer_value << std::endl;
           json msgJson;
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle_value;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
+          
+          // Update the counter
+          ++time_steps;
         } // End if - telemetry
       } else {
         // Manual driving
