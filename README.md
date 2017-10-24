@@ -20,21 +20,24 @@ The steering angle is calculated from the PID equation:
 steering = -Kp * CTE - Kd * CTE' - Ki * Σ(CTE)
 
 Where,
+
 P = -Kp * CTE, is the Proportional term
+
 D = - Kd * CTE', is the Differential term
+
 I = - Ki * Σ(CTE), is the Integral term
 
-The Proportional term (P) is responsible for the angle that the car intercepts the reference trajectory. However, without the aid of the other two terms, P alone gets the vehicle into a marginally stable condition in which the car oscillates around the reference condition. Eventualy the car will never converge to the reference.
+The *Proportional term (P)* is responsible for the angle that the car intercepts the reference trajectory. However, without the aid of the other two terms, P alone gets the vehicle into a marginally stable condition in which the car oscillates around the reference condition. Eventualy the car will never converge to the reference.
 
-The Differential term (D) is responsible for the interception of the reference condition. It takes into account both the CTE of the previous step as well as the current CTE. DIfferentiates them over time and adjust the interception angle that is able to eventually converge to the reference condition.
+The *Differential term (D)* is responsible for the interception of the reference condition. It takes into account both the CTE of the previous step as well as the current CTE. DIfferentiates them over time and adjust the interception angle that is able to eventually converge to the reference condition.
 
-The Integral term (I) is responsible for the elimination of possible bias due to missalignment of the wheels or any other implementation flaw of the car. If only the other two terms were to be implemented, the car would converge to the bias instead of the reference condition. I, takes into account all previous CTEs, integrates them over time, eliminates the bias, and allows the car to converge to the reference condition.
+The *Integral term (I)* is responsible for the elimination of possible bias due to missalignment of the wheels or any other implementation flaw of the car. If only the other two terms were to be implemented, the car would converge to the bias instead of the reference condition. I, takes into account all previous CTEs, integrates them over time, eliminates the bias, and allows the car to converge to the reference condition.
 
-Is it what you expected?
+*Is it what you expected?*
 
-Visual aids are encouraged, i.e. record of a small video of the car in the simulator and describe what each component is set to.
+*Visual aids are encouraged, i.e. record of a small video of the car in the simulator and describe what each component is set to.*
 
-Student discusses how they chose the final hyperparameters (P, I, D coefficients). This could be have been done through manual tuning, twiddle, SGD, or something else, or a combination!
+*Student discusses how they chose the final hyperparameters (P, I, D coefficients). This could be have been done through manual tuning, twiddle, SGD, or something else, or a combination!*
 
 ## Installation
 This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
