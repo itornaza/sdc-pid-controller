@@ -2,29 +2,38 @@
 #include <iostream>
 #include <chrono>
 
+using namespace std;
+using namespace chrono;
+
+const double MSEC_2_SEC = 1000.0;
+
 PID::PID() {}
 
 PID::~PID() {}
 
 void PID::Init(double Kp, double Ki, double Kd) {
-  // Initialize proportional error
-  Kp_ = Kp;
-  Kd_ = Kd;
-  Ki_ = Ki;
+  // Errors
+  p_error_ = 0.0;
+  i_error_ = 0.0;
+  d_error_ = 0.0;
+  
+  // Helper variables
   cte_sum_ = 0.0;
   cte_previous_ = 0.0;
   t_previous_ = 0.0;
+  
+  // Coefficients
+  Kp_ = Kp;
+  Kd_ = Kd;
+  Ki_ = Ki;
 }
 
 void PID::UpdateError(double cte) {
   // Calculate dt
-  long long t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-  double dt = (t - t_previous_);
+  long long t = duration_cast<milliseconds>
+                (system_clock::now().time_since_epoch()).count();
+  double dt = (t - t_previous_) / MSEC_2_SEC;
   t_previous_ = t;
-  std::cout << dt / 1000.0 << std::endl;
-  
-  // TODO: Remove the next line and tune the pid variables
-  dt = 1.0;
   
   // CTE calculations
   double diff_cte = cte - cte_previous_;

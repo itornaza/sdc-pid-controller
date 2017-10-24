@@ -31,23 +31,22 @@ std::string hasData(std::string s) {
 
 int main() {
   uWS::Hub h;
-
-  PID pid;
-  PID pid_speed;
   
-  //-------------------------------------
+  //****************************************************************************
   // Initialize the pid variables
-  //-------------------------------------
+  //****************************************************************************
   // Kp     Ki      kd
   // 0.2    0.004   3.0 - ok, Sebastian
   // 0.2    0.003   3.5 - ok, but abrupt
   // 0.2    0.003   2.0 - ok, smoother
-  //-------------------------------------
-  pid.Init(0.2, 0.004, 3.0);
-  pid_speed.Init(0.2, 0.0, 0.5);
+  PID pid_steering;
+  PID pid_throttle;
+  pid_steering.Init(0.2, 0.004, 0.3);
+  pid_throttle.Init(0.07, 0.0, 0.01);
 
-  h.onMessage([&pid, &pid_speed](uWS::WebSocket<uWS::SERVER> ws, char *data,
-                                 size_t length, uWS::OpCode opCode) {
+  h.onMessage([&pid_steering, &pid_throttle]
+              (uWS::WebSocket<uWS::SERVER> ws, char *data,size_t length,
+               uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -59,7 +58,7 @@ int main() {
         if (event == "telemetry") {
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<std::string>());
-          // Note: Uncomment to use angle and speed data:
+          // Note: Uncomment to use angle and speed data
           // double speed = std::stod(j[1]["speed"].get<std::string>());
           // double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           
@@ -69,13 +68,13 @@ int main() {
           double steer_value;
           double throttle_value;
           
-          // Steering
-          pid.UpdateError(cte);
-          steer_value = pid.TotalError();
+          // Steering control signal
+          pid_steering.UpdateError(cte);
+          steer_value = pid_steering.TotalError();
           
-          // Trottle
-          pid_speed.UpdateError(fabs(steer_value));
-          throttle_value = 0.5 + pid_speed.TotalError();
+          // Trottle control signal
+          pid_throttle.UpdateError(fabs(steer_value));
+          throttle_value = 0.5 + pid_throttle.TotalError();
           //********************************************************************
           
           // DEBUG
