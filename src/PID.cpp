@@ -1,4 +1,6 @@
 #include "PID.h"
+#include <iostream>
+#include <chrono>
 
 PID::PID() {}
 
@@ -6,27 +8,35 @@ PID::~PID() {}
 
 void PID::Init(double Kp, double Ki, double Kd) {
   // Initialize proportional error
-  this->Kp = Kp;
-  this->Kd = Kd;
-  this->Ki = Ki;
-  this->cte_sum = 0.0;
-  this->cte_previous = 0.0;
+  Kp_ = Kp;
+  Kd_ = Kd;
+  Ki_ = Ki;
+  cte_sum_ = 0.0;
+  cte_previous_ = 0.0;
+  t_previous_ = 0.0;
 }
 
 void PID::UpdateError(double cte) {
-  // TODO: Calculate dt from sim
-  double dt = 1.0;
-  double diff_cte = cte - cte_previous;
-  cte_sum += cte;
-  cte_previous = cte;
+  // Calculate dt
+  long long t = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+  double dt = (t - t_previous_);
+  t_previous_ = t;
+  std::cout << dt / 1000.0 << std::endl;
+  
+  // TODO: Remove the next line and tune the pid variables
+  dt = 1.0;
+  
+  // CTE calculations
+  double diff_cte = cte - cte_previous_;
+  cte_sum_ += cte;
+  cte_previous_ = cte;
   
   // Update errors
-  p_error = cte;
-  d_error = diff_cte / dt;
-  i_error = cte_sum;
+  p_error_ = cte;
+  d_error_ = diff_cte / dt;
+  i_error_ = cte_sum_;
 }
 
 double PID::TotalError() {
-  double steering = -(Kp * p_error) -(Kd * d_error) - (Ki * i_error);
-  return  steering;
+  return -(Kp_ * p_error_) -(Kd_ * d_error_) - (Ki_ * i_error_);
 }

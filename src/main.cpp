@@ -3,7 +3,6 @@
 #include "json.hpp"
 #include <math.h>
 #include "PID.h"
-#include <chrono>
 
 // for convenience
 using json = nlohmann::json;
@@ -33,14 +32,11 @@ std::string hasData(std::string s) {
 int main() {
   uWS::Hub h;
 
-  // TODO: Implement dt into the PID controller
-  long long millisecondsSinceEpoch = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-
   PID pid;
   PID pid_speed;
   
   //-------------------------------------
-  // Initialize the pid variable
+  // Initialize the pid variables
   //-------------------------------------
   // Kp     Ki      kd
   // 0.2    0.004   3.0 - ok, Sebastian
@@ -50,8 +46,8 @@ int main() {
   pid.Init(0.2, 0.004, 3.0);
   pid_speed.Init(0.2, 0.0, 0.5);
 
-  h.onMessage([&pid, &pid_speed](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
-                     uWS::OpCode opCode) {
+  h.onMessage([&pid, &pid_speed](uWS::WebSocket<uWS::SERVER> ws, char *data,
+                                 size_t length, uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event
     // The 4 signifies a websocket message
     // The 2 signifies a websocket event
@@ -63,29 +59,24 @@ int main() {
         if (event == "telemetry") {
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<std::string>());
-          double speed = std::stod(j[1]["speed"].get<std::string>());
-          double angle = std::stod(j[1]["steering_angle"].get<std::string>());
+          // Note: Uncomment to use angle and speed data:
+          // double speed = std::stod(j[1]["speed"].get<std::string>());
+          // double angle = std::stod(j[1]["steering_angle"].get<std::string>());
+          
+          //********************************************************************
+          // Calculate controls
+          //********************************************************************
           double steer_value;
           double throttle_value;
           
-          /*
-          * TODO: Calcuate steering value here, remember the steering value is
-          * [-1, 1].
-          * NOTE: Feel free to play around with the throttle and speed. Maybe use
-          * another PID controller to control the speed!
-          */
+          // Steering
           pid.UpdateError(cte);
           steer_value = pid.TotalError();
           
-          // Bound check steering angle
-          if (steer_value > 1.0) {
-            steer_value = 1.0;
-          } else if (steer_value < -1.0) {
-            steer_value = -1.0;
-          }
-          
+          // Trottle
           pid_speed.UpdateError(fabs(steer_value));
           throttle_value = 0.5 + pid_speed.TotalError();
+          //********************************************************************
           
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value

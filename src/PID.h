@@ -6,22 +6,23 @@ public:
   /**
    * Errors
    */
-  double p_error;
-  double i_error;
-  double d_error;
+  double p_error_;
+  double i_error_;
+  double d_error_;
   
   /**
    * Helper variables
    */
-  double cte_sum;
-  double cte_previous;
+  double cte_sum_;
+  double cte_previous_;
+  long long t_previous_;
   
   /**
    * Coefficients
    */
-  double Kp;
-  double Ki;
-  double Kd;
+  double Kp_;
+  double Ki_;
+  double Kd_;
 
   /**
    * Constructor
