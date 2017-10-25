@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A PID controller is implement in C++ to maneuver the the self-driving car around the Udacity lake track. The simulator provides the cross track error (CTE) and the velocity (mph) in order to compute the appropriate steering angle.
+A PID controller is implemented in C++ to maneuver the the self-driving car around the Udacity lake track. The simulator provides the cross track error (CTE) and the velocity (mph) in order to compute the appropriate steering angle.
 
 The project's rubric can be found [here](https://review.udacity.com/#!/rubrics/824/view)
 
@@ -10,34 +10,31 @@ The project's rubric can be found [here](https://review.udacity.com/#!/rubrics/8
 
 The steering angle is calculated from the PID equation:
 
-steering = -Kp * CTE - Kd * CTE' - Ki * Σ(CTE)
+**steering = -Kp * CTE - Kd * CTE' - Ki * Σ(CTE)**
 
 Where,
 
-P = -Kp * CTE, is the Proportional term
+**P = -Kp * CTE**, is the Proportional term
 
-D = - Kd * CTE', is the Differential term
+**D = - Kd * CTE'**, is the Differential term
 
-I = - Ki * Σ(CTE), is the Integral term
+**I = - Ki * Σ(CTE)**, is the Integral term
 
-The *Proportional term (P)* is responsible for the angle that the car intercepts the reference trajectory. However, without the aid of the other two terms, P alone gets the vehicle into a marginally stable condition in which the car oscillates around the reference condition. Eventualy the car will never converge to the reference.
+1. The *Proportional term (P)* is responsible for the angle that the car intercepts the reference trajectory. However, without the aid of the other two terms, P alone gets the vehicle into a marginally stable condition in which the car oscillates around the reference condition. Eventualy the car will never converge to the reference.
 
-The *Differential term (D)* is responsible for the interception of the reference condition. It takes into account both the CTE of the previous step as well as the current CTE. DIfferentiates them over time and adjust the interception angle that is able to eventually converge to the reference condition.
+2. The *Differential term (D)* is responsible for the interception of the reference condition. It takes into account both the CTE of the previous step as well as the current CTE. DIfferentiates them over time and adjust the interception angle in a way so that the car is able to eventually converge to the reference condition.
 
-The *Integral term (I)* is responsible for the elimination of possible bias due to missalignment of the wheels or any other implementation flaw of the car. If only the other two terms were to be implemented, the car would converge to the bias instead of the reference condition. I, takes into account all previous CTEs, integrates them over time, eliminates the bias, and allows the car to converge to the reference condition.
+3. The *Integral term (I)* is responsible for the elimination of possible bias due to missalignment of the wheels or any other implementation flaw in the car. If only the other two terms were to be implemented, the car would converge to the bias instead of the reference condition. The integral term, takes into account all previous CTEs, integrates them over time, eliminates the bias, and allows the car to converge to the reference condition.
 
 Having in mind the above principles,  the final hyperparameters (P, I, D coefficients) had been manually tuned in order to achieve normal vehicle behavior while it circles around the track.
 
 To further investigate the contribution of each coefficient to the control of the car, the simulation was done three times with each of the coefficients set to zero:
 
-Kp set to zero [youtube](https://youtu.be/8fUPny56UCc)
-The car cannot recover fast after having an offset from the reference condition as expected.
+1. With *Kp* set to zero, the car cannot recover fast after having an offset from the reference condition as expected -[youtube video](https://youtu.be/8fUPny56UCc).
 
-Ki set to zero [youtube](https://youtu.be/SrLepzY1NAs)
-Does not cause troubles in the behavior of the car mostly because the simulator is an optimal device without biases.
+2. With *Kd* set to zero, the car gets out of the road just after the starting point. This behavior showcases the significance of the differential coefficient in controlling the car - [youtube video](https://youtu.be/oF0PT7w178s).
 
-Kd set to zero [youtube](https://youtu.be/oF0PT7w178s)
-The car gets out of the road just after the starting point. This behavior showcase the significance of the differential coefficient in controlling the car
+3. With *Ki* set to zero, does not cause significant issues in the behavior of the car mostly because the simulator is an optimal device and without biases - [youtube video](https://youtu.be/SrLepzY1NAs).
 
 ## Installation
 This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
