@@ -33,11 +33,7 @@ The *Differential term (D)* is responsible for the interception of the reference
 
 The *Integral term (I)* is responsible for the elimination of possible bias due to missalignment of the wheels or any other implementation flaw of the car. If only the other two terms were to be implemented, the car would converge to the bias instead of the reference condition. I, takes into account all previous CTEs, integrates them over time, eliminates the bias, and allows the car to converge to the reference condition.
 
-*Is it what you expected?*
-
-*Visual aids are encouraged, i.e. record of a small video of the car in the simulator and describe what each component is set to.*
-
-*Student discusses how they chose the final hyperparameters (P, I, D coefficients). This could be have been done through manual tuning, twiddle, SGD, or something else, or a combination!*
+Having in mind the above principles,  the final hyperparameters (P, I, D coefficients) had been manually tuned in order to achieve normal vehicle behavior while it circles around the track.
 
 ## Installation
 This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
