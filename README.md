@@ -4,7 +4,7 @@
 
 A PID controller is implemented in C++ to maneuver the the self-driving car around the Udacity lake track. The simulator provides the cross track error (CTE) and the velocity (mph) in order to compute the appropriate steering angle.
 
-The project's rubric can be found [here](https://review.udacity.com/#!/rubrics/824/view)
+The project's rubric can be found [here](https://review.udacity.com/#!/rubrics/824/view).
 
 ## Discussion
 
@@ -30,11 +30,11 @@ Having in mind the above principles,  the final hyperparameters (P, I, D coeffic
 
 To further investigate the contribution of each coefficient to the control of the car, the simulation was done three times with each of the coefficients set to zero:
 
-1. With *Kp* set to zero, the car cannot recover fast after having an offset from the reference condition as expected -[youtube video](https://youtu.be/8fUPny56UCc).
+1. With *Kp* set to zero, the car cannot recover fast after having an offset from the reference condition as expected -[youtube video (Kp = 0)](https://youtu.be/8fUPny56UCc).
 
-2. With *Kd* set to zero, the car gets out of the road just after the starting point. This behavior showcases the significance of the differential coefficient in controlling the car - [youtube video](https://youtu.be/oF0PT7w178s).
+2. With *Kd* set to zero, the car gets out of the road just after the starting point. This behavior showcases the significance of the differential coefficient in controlling the car - [youtube video (Kd = 0)](https://youtu.be/oF0PT7w178s).
 
-3. With *Ki* set to zero, does not cause significant issues in the behavior of the car mostly because the simulator is an optimal device and without biases - [youtube video](https://youtu.be/SrLepzY1NAs).
+3. With *Ki* set to zero, does not cause significant issues in the behavior of the car mostly because the simulator is an optimal device and without biases - [youtube video (Ki = 0)](https://youtu.be/SrLepzY1NAs).
 
 ## Installation
 This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
