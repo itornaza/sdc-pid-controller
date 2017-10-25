@@ -6,13 +6,6 @@ A PID controller is implement in C++ to maneuver the the self-driving car around
 
 The project's rubric can be found [here](https://review.udacity.com/#!/rubrics/824/view)
 
-The simulation video on [youtube]()
-
-[//]: # (Image References)
-[image1]: ./images/.png "PID"
-
-![alt text][image1]
-
 ## Discussion
 
 The steering angle is calculated from the PID equation:
@@ -34,6 +27,17 @@ The *Differential term (D)* is responsible for the interception of the reference
 The *Integral term (I)* is responsible for the elimination of possible bias due to missalignment of the wheels or any other implementation flaw of the car. If only the other two terms were to be implemented, the car would converge to the bias instead of the reference condition. I, takes into account all previous CTEs, integrates them over time, eliminates the bias, and allows the car to converge to the reference condition.
 
 Having in mind the above principles,  the final hyperparameters (P, I, D coefficients) had been manually tuned in order to achieve normal vehicle behavior while it circles around the track.
+
+To further investigate the contribution of each coefficient to the control of the car, the simulation was done three times with each of the coefficients set to zero:
+
+Kp set to zero [youtube](https://youtu.be/8fUPny56UCc)
+The car cannot recover fast after having an offset from the reference condition as expected.
+
+Ki set to zero [youtube](https://youtu.be/SrLepzY1NAs)
+Does not cause troubles in the behavior of the car mostly because the simulator is an optimal device without biases.
+
+Kd set to zero [youtube](https://youtu.be/oF0PT7w178s)
+The car gets out of the road just after the starting point. This behavior showcase the significance of the differential coefficient in controlling the car
 
 ## Installation
 This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)

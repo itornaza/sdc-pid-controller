@@ -1,8 +1,6 @@
 #include "PID.h"
 #include <iostream>
 #include <chrono>
-#include <vector>
-#include <numeric>
 
 using namespace std;
 using namespace chrono;

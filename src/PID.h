@@ -1,8 +1,6 @@
 #ifndef PID_H
 #define PID_H
 
-#include <vector>
-
 class PID {
 public:
   /**
@@ -50,11 +48,6 @@ public:
    * Calculate the total PID error
    */
   double TotalError();
-  
-  /*
-   * Optimise the PID coefficients using the twiddle algorithm
-   */
-  void Twiddle(double tolerance);
 };
 
 #endif /* PID_H */
