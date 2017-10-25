@@ -12,7 +12,12 @@ constexpr double pi() { return M_PI; }
 double deg2rad(double x) { return x * pi() / 180; }
 double rad2deg(double x) { return x * 180 / pi(); }
 
+// Counters
 static int time_steps;
+
+// Constants
+const double MIN_SPEED = 30.0;
+const double MAX_THROTTLE = 0.6;
 
 /**
  * Helper method to restart the simulator
@@ -45,14 +50,12 @@ int main() {
   //****************************************************************************
   // Initialize the pid variables
   //****************************************************************************
-  // Kp     Ki      kd
-  // 0.2    0.004   3.0 - ok, Sebastian
-  // 0.2    0.003   3.5 - ok, but abrupt
-  // 0.2    0.003   2.0 - ok, smoother
   PID pid_steering;
   PID pid_throttle;
-  pid_steering.Init(0.2, 0.004, 0.3);
-  pid_throttle.Init(0.07, 0.0, 0.01);
+  
+  //                Kp    Ki     kd
+  pid_steering.Init(0.21, 0.007, 0.7);
+  pid_throttle.Init(0.07, 0.001, 0.01);
 
   h.onMessage([&pid_steering, &pid_throttle]
               (uWS::WebSocket<uWS::SERVER> ws, char *data,size_t length,
@@ -68,14 +71,13 @@ int main() {
         if (event == "telemetry") {
           // j[1] is the data JSON object
           double cte = std::stod(j[1]["cte"].get<std::string>());
-          
-          // Note: Uncomment to use angle and speed data
-          // double speed = std::stod(j[1]["speed"].get<std::string>());
-          // double angle = std::stod(j[1]["steering_angle"].get<std::string>());
+          double speed = std::stod(j[1]["speed"].get<std::string>());
+          double angle = std::stod(j[1]["steering_angle"].get<std::string>());
           
           //********************************************************************
-          // Calculate controls
+          // Calculate controls using PID
           //********************************************************************
+          
           double steer_value;
           double throttle_value;
           
@@ -83,23 +85,20 @@ int main() {
           pid_steering.UpdateError(cte);
           steer_value = pid_steering.TotalError();
           
-          // TODO: Optimise with twiddler
-          if (time_steps > 500 && time_steps < 1000) {
-            pid_steering.Twiddle(0.7);
-          }
-          if (fabs(steer_value) > 1.0) {
-            std::cout << "Restarting sim" << std::endl;
-            Restart(ws);
-            time_steps = 0;
+          // Trottle control signal
+          if (speed > MIN_SPEED) {
+            // For speeds in excess of 30mph, brake on large steering angles
+            pid_throttle.UpdateError(fabs(steer_value));
+            throttle_value = MAX_THROTTLE + pid_throttle.TotalError();
+          } else {
+            // Do not let speed drop below 30mph
+            throttle_value = MIN_SPEED;
           }
           
-          // Trottle control signal
-          pid_throttle.UpdateError(fabs(steer_value));
-          throttle_value = 0.5 + pid_throttle.TotalError();
           //********************************************************************
           
           // DEBUG
-          std::cout << "[" << time_steps << "] CTE: " << cte
+          std::cout << "[" << time_steps++ << "] CTE: " << cte
                     << " Steering Value: " << steer_value << std::endl;
           json msgJson;
           msgJson["steering_angle"] = steer_value;
@@ -107,9 +106,8 @@ int main() {
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
           std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
-          
-          // Update the counter
-          ++time_steps;
+          std::cout << "-> Speed = " << speed << " Angle = " << angle
+                    << std::endl;
         } // End if - telemetry
       } else {
         // Manual driving
