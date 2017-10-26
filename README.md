@@ -2,7 +2,7 @@
 
 ## Introduction
 
-A PID controller is implemented in C++ to maneuver the the self-driving car around the Udacity lake track. The simulator provides the cross track error (CTE) and the velocity (mph) in order to compute the appropriate steering angle.
+A PID controller is implemented in C++ to maneuver the self-driving car around the Udacity lake track. The simulator provides the cross track error (CTE) and the velocity (mph) in order to compute the appropriate steering angle.
 
 The project's rubric can be found [here](https://review.udacity.com/#!/rubrics/824/view).
 
