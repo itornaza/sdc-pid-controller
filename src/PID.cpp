@@ -12,15 +12,13 @@ PID::PID() {}
 PID::~PID() {}
 
 void PID::Init(double Kp, double Ki, double Kd) {
+  // Timestamp
+  t_previous_ = 0.0;
+  
   // Errors
   p_error_ = 0.0;
   i_error_ = 0.0;
   d_error_ = 0.0;
-  
-  // Helper variables
-  cte_sum_ = 0.0;
-  cte_previous_ = 0.0;
-  t_previous_ = 0.0;
   
   // Coefficients
   Kp_ = Kp;
@@ -35,15 +33,10 @@ void PID::UpdateError(double cte) {
   double dt = (t - t_previous_) / MSEC_2_SEC;
   t_previous_ = t;
   
-  // CTE calculations
-  double diff_cte = cte - cte_previous_;
-  cte_sum_ += cte;
-  cte_previous_ = cte;
-  
   // Update errors
+  d_error_ = (cte - p_error_) / dt;
   p_error_ = cte;
-  d_error_ = diff_cte / dt;
-  i_error_ = cte_sum_;
+  i_error_ += cte;
 }
 
 double PID::TotalError() {

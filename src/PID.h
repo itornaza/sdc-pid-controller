@@ -11,10 +11,8 @@ public:
   double d_error_;
   
   /**
-   * Helper variables
+   * Timestamp
    */
-  double cte_sum_;
-  double cte_previous_;
   long long t_previous_;
   
   /**
@@ -44,7 +42,7 @@ public:
    */
   void UpdateError(double cte);
 
-  /*
+  /**
    * Calculate the total PID error
    */
   double TotalError();
